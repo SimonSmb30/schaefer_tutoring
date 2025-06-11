@@ -1,0 +1,310 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String          @unique
+  password      String
+  emailVerified DateTime?
+  image         String?
+  phone         String?
+  grantId       String?
+  grantEmail    String?
+  calendarLink  String?
+  isGreeting    Boolean         @default(false)
+  role          Role            @default(student)
+  accounts      Account[]
+  sessions      Session[]
+  Authenticator Authenticator[]
+
+  pricingId             String? @db.ObjectId
+  stripeCustomerId      String?
+  stripePaymentMethodId String?
+
+  subjects       String[]
+  paymentHistory PaymentHistory[]
+
+  // Relations for lessons
+  teacherLessons Lesson[] @relation(name: "TeacherLessons")
+  studentLessons Lesson[] @relation(name: "StudentLessons")
+  reviews        Review[]
+  pricing        Pricing? @relation(fields: [pricingId], references: [id])
+
+  // Relation for connection
+  studentConnections Connection[] @relation("StudentConnection")
+  teacherConnections Connection[] @relation("TeacherConnection")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Connection {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  studentId String           @db.ObjectId
+  teacherId String           @db.ObjectId
+  status    ConnectionStatus @default(pending)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student User @relation("StudentConnection", fields: [studentId], references: [id])
+  teacher User @relation("TeacherConnection", fields: [teacherId], references: [id])
+}
+
+enum ConnectionStatus {
+  pending
+  approved
+  rejected
+}
+
+model Lesson {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  teacherId String @db.ObjectId
+  studentId String @db.ObjectId
+  subjectId String @db.ObjectId
+
+  date   DateTime
+  time   String
+  status LessonStatus @default(planned)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships with explicit names
+  teacher User    @relation(name: "TeacherLessons", fields: [teacherId], references: [id], onDelete: Cascade)
+  student User    @relation(name: "StudentLessons", fields: [studentId], references: [id], onDelete: Cascade)
+  subject Subject @relation(name: "SubjectLessons", fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([teacherId])
+  @@index([studentId])
+  @@index([subjectId])
+}
+
+enum Role {
+  student
+  teacher
+  admin
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @id @map("_id")
+  userId               String  @db.ObjectId
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, credentialID])
+}
+
+model Subject {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
+  // Relation with Lesson
+  lessons Lesson[] @relation(name: "SubjectLessons")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum LessonStatus {
+  now
+  canceled
+  accepted
+  planned
+  carried_out
+}
+
+model Assignment {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  attachment  String? // URL or file path for the attachment
+  description String?
+  studentId   String  @db.ObjectId
+  teacherId   String  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  rating    Int
+  message   String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FreeTrialReq {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  studentEmail   String           @unique
+  fullName       String
+  subject        String
+  phone          String
+  notes          String?
+  preferredSlots preferredSlots[]
+  date           DateTime?
+  time           String?
+  meetingLink    String?
+
+  status    FreeTrialReqStatus @default(pending)
+  teacherId String?            @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum FreeTrialReqStatus {
+  pending
+  accepted
+  rejected
+  confirmed
+  completed
+}
+
+model preferredSlots {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  date DateTime
+  time String
+
+  requestId String       @db.ObjectId // Foreign key referencing FreeTrialReq
+  request   FreeTrialReq @relation(fields: [requestId], references: [id]) // Define the relation
+
+  @@map("preferred_slots") // Optional: Map the model to a specific MongoDB collection name
+}
+
+model Recommendation {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  creator String @db.ObjectId
+  slug    String @unique
+
+  // Participants with join timestamps
+  participants ParticipantJoin[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Embedded model to track participant join times
+model ParticipantJoin {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  recommendationId String   @db.ObjectId
+  participantId    String   @db.ObjectId
+  slugId           String
+  joinedAt         DateTime @default(now())
+
+  recommendation Recommendation @relation(fields: [recommendationId], references: [id])
+}
+
+enum Unit {
+  hour
+  month
+  session
+}
+
+model Pricing {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  price         Int
+  unit          Unit     @default(hour)
+  description   String
+  isRecommended Boolean  @default(false)
+  features      String[]
+
+  // Add the opposite relation field
+  users User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PaymentHistory {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId           String   @db.ObjectId
+  paymentIntentId     String
+  invoiceId           String
+  invoicePdfUrl       String?
+  paymentForDate      DateTime
+  totalLessonsPaidFor Int
+  edgePdfUrl          String?
+  amount              Int
+  discount            Int
+
+  student User @relation(fields: [studentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([paymentForDate])
+}
+
+model DiscountRules {
+  id                   String @id @default(auto()) @map("_id") @db.ObjectId
+  creator              String @db.ObjectId
+  minimumLesson        Int
+  minimumRecomendation Int
+  discount             Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
