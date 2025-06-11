@@ -1,75 +1,173 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ArrowRight, BookOpen, Star, Users } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const Hero = () => {
   const [load, setLoad] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState("");
 
   useEffect(() => {
     setLoad(true);
   }, []);
 
-  if (!load) return null;
-  return (
-    <div className="py-12 md:py-20 bg-gradient-to-b from-blue-50 to-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="md:w-full">
-          <h1 className="text-4xl md:text-5xl font-bold text-left text-gray-900 leading-tight mb-4">
-            Individuelles Lernen,{" "}
-            <span className="text-primary">bessere Noten</span>
-          </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Wir bieten qualitativ hochwertige Nachhilfe für Schüler aller
-            Altersstufen. Unsere erfahrenen Tutoren helfen dir, deine Ziele zu
-            erreichen.
-          </p>
+  const subjects = [
+    "Mathematik",
+    "Physik", 
+    "Chemie",
+    "Deutsch",
+    "Englisch",
+    "Biologie",
+    "Geschichte",
+    "Französisch"
+  ];
 
-          {/* <p className="text-lg text-gray-600 mb-6">
-            <span className="font-bold text-primary">Schäfer Tutoring</span> ist
-            ein Zusammenschluss von Studenten aus Mannheim, die ihre
-            akademischen Stärken nutzen, um Schülern{" "}
-            <span className="font-bold text-primary">
-              qualitativ hochwertige Nachhilfe
-            </span>{" "}
-            anzubieten.
-          </p> */}
-          <p className="text-lg text-gray-600 mb-6">
-            Unser Team aus Fachexperten verschiedener Disziplinen bietet{" "}
-            <span className="font-bold text-primary">
-              maßgeschneiderte Lernpläne
-            </span>{" "}
-            und ein tiefes Verständnis für die Herausforderungen des
-            Schulalltags – für nachhaltige Lernerfolge.
-          </p>
-          <div className="bg-white rounded-lg shadow-sm p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-10">
-            <div className="shrink-0 h-[180px] w-[180px] relative">
-              <Image
-                src="https://res.cloudinary.com/drdztqgcx/image/upload/v1742875602/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e_wdvvm3.jpg"
-                alt="Simon Schäfer"
-                fill
-                className="rounded-full"
-              />
+  if (!load) return null;
+
+  return (
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.03"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+          
+          {/* Left Content */}
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+              <Star className="w-4 h-4 mr-2 fill-current" />
+              #1 Nachhilfe-Plattform in Deutschland
             </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-semibold mb-3">Simon Schäfer</h2>
-              <p className="text-slate-800">
-                Als Gründer bringe{" "}
-                <span className="text-primary font-medium">
-                  ich, Simon Schäfer
-                </span>
-                , meine Erfahrung als{" "}
-                <span className="text-primary font-medium">
-                  Wirtschaftsingenieurstudent
-                </span>{" "}
-                und{" "}
-                <span className="text-primary font-medium">
-                  3 Jahre Nachhilfepraxis
-                </span>{" "}
-                ein. Ich habe es mir zur Aufgabe gemacht, Schüler effektiv auf
-                ihre Prüfungen vorzubereiten.
+
+            {/* Main Heading */}
+            <div className="space-y-4">
+              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                Bessere Noten
+                <span className="block text-blue-600">beginnen hier</span>
+              </h1>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                Qualifizierte Tutoren, flexible Zeiten und personalisierte Lernpläne. 
+                Erreiche deine Ziele mit Schäfer Tutoring.
               </p>
             </div>
+
+            {/* Subject Selection & CTA */}
+            <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <BookOpen className="w-4 h-4" />
+                  <span>Wähle dein Fach für eine kostenlose Probestunde</span>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1">
+                    <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                      <SelectTrigger className="h-14 text-lg border-2 border-gray-200 hover:border-blue-300 transition-colors">
+                        <SelectValue placeholder="Fach auswählen..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {subjects.map((subject) => (
+                          <SelectItem key={subject} value={subject} className="text-lg py-3">
+                            {subject}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button 
+                    size="lg" 
+                    className="h-14 px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                    disabled={!selectedSubject}
+                    asChild
+                  >
+                    <Link href={selectedSubject ? `/#pricing` : "#"}>
+                      Probestunde anfragen
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="flex items-center space-x-8 pt-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">500+</div>
+                <div className="text-sm text-gray-600">Zufriedene Schüler</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">98%</div>
+                <div className="text-sm text-gray-600">Erfolgsrate</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">4.9★</div>
+                <div className="text-sm text-gray-600">Bewertung</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Content */}
+          <div className="relative">
+            {/* Main Image */}
+            <div className="relative z-10">
+              <div className="bg-white rounded-3xl shadow-2xl p-8 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                <div className="relative h-96 w-full rounded-2xl overflow-hidden">
+                  <Image
+                    src="https://res.cloudinary.com/drdztqgcx/image/upload/v1742875602/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e_wdvvm3.jpg"
+                    alt="Simon Schäfer - Gründer"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="mt-6 text-center">
+                  <h3 className="text-xl font-semibold text-gray-900">Simon Schäfer</h3>
+                  <p className="text-gray-600">Gründer & Wirtschaftsingenieur</p>
+                  <div className="flex justify-center mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Elements */}
+            <div className="absolute top-10 -left-4 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg animate-bounce">
+              <Users className="w-4 h-4 inline mr-1" />
+              Live: 23 Schüler online
+            </div>
+            
+            <div className="absolute bottom-10 -right-4 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+              ✨ 3 Jahre Erfahrung
+            </div>
+
+            {/* Background Decoration */}
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
+          </div>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="mt-16 pt-8 border-t border-gray-200">
+          <p className="text-center text-gray-500 text-sm mb-6">Vertraut von Schülern und Eltern</p>
+          <div className="flex justify-center items-center space-x-8 opacity-60">
+            <div className="text-2xl font-bold text-gray-400">Mannheim</div>
+            <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+            <div className="text-2xl font-bold text-gray-400">Heidelberg</div>
+            <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+            <div className="text-2xl font-bold text-gray-400">Karlsruhe</div>
           </div>
         </div>
       </div>
