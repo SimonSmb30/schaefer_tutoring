@@ -1,13 +1,4 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ArrowRight, BookOpen, Star, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -62,18 +53,14 @@ const Hero = () => {
                 
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1">
-                    <Select>
-                      <SelectTrigger className="h-14 text-lg border-2 border-gray-200 hover:border-blue-300 transition-colors">
-                        <SelectValue placeholder="Fach auswählen..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {subjects.map((subject) => (
-                          <SelectItem key={subject} value={subject} className="text-lg py-3">
-                            {subject}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <select className="w-full h-14 text-lg border-2 border-gray-200 hover:border-blue-300 transition-colors rounded-md px-3 bg-white">
+                      <option value="">Fach auswählen...</option>
+                      {subjects.map((subject) => (
+                        <option key={subject} value={subject}>
+                          {subject}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   
                   <Button 
