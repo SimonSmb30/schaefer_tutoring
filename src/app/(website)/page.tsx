@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { mockSubjects } from "../../../lib/mockData";
 import { redirect } from "next/navigation";
 import TrialLessonForm from "./_components/free-trial-form";
 import Hero from "./_components/hero";
@@ -9,30 +9,42 @@ import Testmonial from "./_components/testmonial";
 import WhySchafer from "./_components/why-schafer";
 
 const NachhilfeLandingPage = async () => {
-  const subjects = await prisma.subject.findMany();
+  const subjects = mockSubjects;
 
   const cs = await auth();
 
   let user;
 
   if (cs?.user) {
-    user = await prisma.user.findFirst({
-      where: {
-        id: cs.user.id,
-      },
-      select: {
-        isGreeting: true,
-        id: true,
-        pricingId: true,
-      },
-    });
-
-    if (!user?.isGreeting) {
-      redirect(`/welcome/${user?.id}`);
-    }
+    // Since we're using mock data, we'll create a mock user object
+    user = {
+      isGreeting: true,
+      id: cs.user.id,
+      pricingId: null
+    };
   }
 
-  const pricing = await prisma.pricing.findMany();
+  // Mock pricing data
+  const pricing = [
+    {
+      id: "1",
+      name: "Basic Plan",
+      price: 25,
+      unit: "hour",
+      description: "Perfect for occasional tutoring needs",
+      isRecommended: false,
+      features: ["1 hour per week", "Access to learning materials", "Email support"]
+    },
+    {
+      id: "2",
+      name: "Standard Plan",
+      price: 40,
+      unit: "hour",
+      description: "Our most popular tutoring package",
+      isRecommended: true,
+      features: ["2 hours per week", "Personalized learning plan", "Priority scheduling", "24/7 support"]
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white font-sans">

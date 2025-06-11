@@ -1,8 +1,8 @@
 import SubjectPill from "@/app/dashboard/admin/_components/subjects/subject-pill";
-import { prisma } from "@/lib/prisma";
+import { mockSubjects } from "../../../../lib/mockData";
 
 const Subjects = async () => {
-  const subjects = await prisma.subject.findMany();
+  const subjects = mockSubjects;
 
   if (subjects.length == 0) return;
   return (
