@@ -5,7 +5,9 @@ import { useEffect } from "react";
 
 const CrispChat = () => {
   useEffect(() => {
-    Crisp.configure(process.env.NEXT_PUBLIC_CRISP_ID!);
+    // Commented out Crisp initialization to prevent errors
+    // Crisp.configure(process.env.NEXT_PUBLIC_CRISP_ID!);
+    console.log("Crisp chat initialization disabled");
   }, []);
   return null;
 };

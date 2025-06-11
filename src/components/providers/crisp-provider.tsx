@@ -3,5 +3,7 @@
 import CrispChat from "./crist-chat";
 
 export const CrispProvider = () => {
-  return <CrispChat />;
+  // Crisp provider is disabled
+  // return <CrispChat />;
+  return null;
 };

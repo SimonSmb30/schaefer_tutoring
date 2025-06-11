@@ -39,7 +39,8 @@ export default async function RootLayout({
           <AppProvider>
             <StripeElementsWrapper>{children}</StripeElementsWrapper>
             <NextTopLoader showSpinner={false} />
-            <CrispProvider />
+            {/* Crisp chat widget disabled */}
+            {/* <CrispProvider /> */}
           </AppProvider>
         </EdgeStoreProvider>
         <Toaster richColors closeButton />
