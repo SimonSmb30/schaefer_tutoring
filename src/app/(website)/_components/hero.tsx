@@ -11,16 +11,8 @@ import {
 import { ArrowRight, BookOpen, Star, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 const Hero = () => {
-  const [load, setLoad] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState("");
-
-  useEffect(() => {
-    setLoad(true);
-  }, []);
-
   const subjects = [
     "Mathematik",
     "Physik", 
@@ -31,8 +23,6 @@ const Hero = () => {
     "Geschichte",
     "Französisch"
   ];
-
-  if (!load) return null;
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-hidden">
@@ -72,7 +62,7 @@ const Hero = () => {
                 
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1">
-                    <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                    <Select>
                       <SelectTrigger className="h-14 text-lg border-2 border-gray-200 hover:border-blue-300 transition-colors">
                         <SelectValue placeholder="Fach auswählen..." />
                       </SelectTrigger>
@@ -89,10 +79,9 @@ const Hero = () => {
                   <Button 
                     size="lg" 
                     className="h-14 px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200"
-                    disabled={!selectedSubject}
                     asChild
                   >
-                    <Link href={selectedSubject ? `/#pricing` : "#"}>
+                    <Link href="/#pricing">
                       Probestunde anfragen
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Link>
