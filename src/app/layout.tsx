@@ -1,11 +1,5 @@
-import { CrispProvider } from "@/components/providers/crisp-provider";
-import { EdgeStoreProvider } from "@/lib/edgestore";
-import AppProvider from "@/provider/AppProvider";
-import StripeElementsWrapper from "@/provider/element-wrapper";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import NextTopLoader from "nextjs-toploader";
-import { Toaster } from "sonner";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -20,12 +14,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Schaefer Tutor",
-  description:
-    "Schaefer Tutor - Your go-to platform for effective and personalized learning.",
+  title: "Schäfer Tutoring - UI Demo",
+  description: "UI components showcase for Schäfer Tutoring platform",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -35,15 +28,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <EdgeStoreProvider>
-          <AppProvider>
-            <StripeElementsWrapper>{children}</StripeElementsWrapper>
-            <NextTopLoader showSpinner={false} />
-            {/* Crisp chat widget disabled */}
-            {/* <CrispProvider /> */}
-          </AppProvider>
-        </EdgeStoreProvider>
-        <Toaster richColors closeButton />
+        {children}
       </body>
     </html>
   );

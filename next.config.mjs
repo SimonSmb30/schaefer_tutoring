@@ -7,21 +7,9 @@ const nextConfig = {
         protocol: "https",
       },
       {
-        hostname: "files.edgestore.dev",
+        hostname: "images.pexels.com",
         protocol: "https",
       },
-      {
-        hostname: "api.qrserver.com",
-        protocol: "https",
-      },
-      {
-        hostname: "res-console.cloudinary.com",
-        protocol: "https",
-      },
-      {
-        hostname: "unsplash.com",
-        protocol: "https"
-      }
     ],
   },
 };
