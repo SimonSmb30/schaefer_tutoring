@@ -1,10 +1,14 @@
-import { auth, signOut } from "@/auth";
+import { signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { Session } from "next-auth";
 
-const Navbar = async () => {
-  const session = await auth();
+interface NavbarProps {
+  session: Session | null;
+}
+
+const Navbar = ({ session }: NavbarProps) => {
   const role = session?.user.role as "student" | "teacher" | "admin";
 
   return (

@@ -1,5 +1,6 @@
 import Footer from "@/components/local/footer";
 import Navbar from "@/components/local/navbar";
+import { auth } from "@/auth";
 import { ReactNode } from "react";
 
 export default async function WebsiteLayout({
@@ -7,9 +8,11 @@ export default async function WebsiteLayout({
 }: {
   children: ReactNode;
 }) {
+  const session = await auth();
+
   return (
     <div>
-      <Navbar />
+      <Navbar session={session} />
       {children}
       <Footer />
     </div>
