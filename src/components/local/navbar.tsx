@@ -9,7 +9,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ session }: NavbarProps) => {
-  const role = session?.user.role as "student" | "teacher" | "admin";
+  const role = session?.user?.role as "student" | "teacher" | "admin";
 
   return (
     <nav className="shadow-md">

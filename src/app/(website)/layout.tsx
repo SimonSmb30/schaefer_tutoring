@@ -3,6 +3,9 @@ import Navbar from "@/components/local/navbar";
 import { auth } from "@/auth";
 import { ReactNode } from "react";
 
+// Force dynamic rendering to ensure request context is available
+export const dynamic = 'force-dynamic';
+
 export default async function WebsiteLayout({
   children,
 }: {
